@@ -1,27 +1,28 @@
 import { Layout, Menu, MenuProps, theme } from "antd";
+import { NavLink, Outlet } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const items: MenuProps["items"] = [
   {
-    key: "1",
-    label: "Dashboard",
+    key: "Dashboard",
+    label: <NavLink to={"/admin/dashboard"}> Dashboard</NavLink>,
   },
   {
-    key: "2",
-    label: "Profile",
-  },
-  {
-    key: "3",
+    key: "User Management",
     label: "User Management",
     children: [
       {
-        key: "12",
-        label: "Admin management",
+        key: "Create Admin",
+        label: <NavLink to={"/admin/create-admin"}> Create Admin</NavLink>,
       },
       {
-        key: "22",
-        label: "Student Management",
+        key: "Create Faculty",
+        label: <NavLink to={"/admin/create-faculty"}> Create Faculty</NavLink>,
+      },
+      {
+        key: "Create Student",
+        label: <NavLink to={"/admin/create-student"}> Create Student</NavLink>,
       },
     ],
   },
@@ -73,7 +74,7 @@ const MainLayout = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <h1>Content will go here</h1>
+            <Outlet />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
