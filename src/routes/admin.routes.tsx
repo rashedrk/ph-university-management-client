@@ -66,7 +66,7 @@ export const adminRoutes = adminPaths.reduce((acc: TRoutes[], item) => {
 
 export const adminSidebarItems = adminPaths.reduce(
   (acc: TAdminSidebarItem[], item) => {
-    if (item.path && item.element) {
+    if (item.path && item.name) {
       acc.push({
         key: item.name,
         label: <NavLink to={`/admin/${item.path}`}>{item.name}</NavLink>,
