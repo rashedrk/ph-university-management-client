@@ -6,6 +6,7 @@ import { TAuthUser, setUser } from "../redux/features/auth/authSlice";
 import verifyToken from "../utils/verifyToken";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import PhForm from "../components/form/PhForm";
 
 
 const Login = () => {
@@ -38,7 +39,7 @@ const Login = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <PhForm onSubmit={onSubmit}>
             <div>
                 <label htmlFor="id"> ID: </label>
                 <input type="text" id="id" {...register('id')}  />
@@ -48,7 +49,7 @@ const Login = () => {
                 <input type="text" id="password" {...register('password')}  />
             </div>
             <Button htmlType="submit">Login</Button>
-        </form>
+        </PhForm>
     );
 };
 
