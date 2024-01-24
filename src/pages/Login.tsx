@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 import { useAppDispatch } from "../redux/hooks";
 import { TAuthUser, setUser } from "../redux/features/auth/authSlice";
@@ -7,12 +7,9 @@ import verifyToken from "../utils/verifyToken";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-type TLoginData = {
-    id: string,
-    password: string,
-}
+
 const Login = () => {
-    const {register, handleSubmit} = useForm<TLoginData>({
+    const {register, handleSubmit} = useForm({
         defaultValues: {
             id: 'A-0001',
             password: 'admin123'
@@ -24,7 +21,7 @@ const Login = () => {
 
     // console.log("Error", error);
     
-    const onSubmit: SubmitHandler<TLoginData> = async(data) => {
+    const onSubmit = async(data: FieldValues) => {
         // console.log(data);
         const toastId = toast.loading('Logging in...');
         try {
