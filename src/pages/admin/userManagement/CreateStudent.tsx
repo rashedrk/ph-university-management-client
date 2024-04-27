@@ -4,8 +4,18 @@ import PHInput from "../../../components/form/PhInput";
 import { Button, Col, Divider, Row } from "antd";
 import PHSelect from "../../../components/form/PhSelect";
 import { bloodGroupOptions, genderOptions } from "../../../constants/global";
+import PHDatePicker from "../../../components/form/PhDatePicker";
+import { useGetAcademicSemesterQuery } from "../../../redux/features/admin/academicManagement.api";
 
 const CreateStudent = () => {
+
+    const {data: semesterData, isLoading: semesterIsLoading} = useGetAcademicSemesterQuery(undefined);
+
+    const semesterOptions = semesterData?.data?.map(item => ({
+        value: item._id,
+        label: `${item.name} ${item.year}`
+    }))
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
 
@@ -32,7 +42,7 @@ const CreateStudent = () => {
               <PHSelect options={genderOptions} name="gender" label="Gender" />
             </Col>
             <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
-              <PHInput type="text" name="dateOfBirth" label="Date of Birth" />
+              <PHDatePicker name="dateOfBirth" label="Date of Birth" />
             </Col>
             <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
               <PHSelect options={bloodGroupOptions} name="bloogGroup" label="Blood Group" />
@@ -138,6 +148,15 @@ const CreateStudent = () => {
                 name="localGuardian.address"
                 label="Address"
               />
+            </Col>
+          </Row>
+          <Divider>Academic info.</Divider>
+          <Row gutter={8}>
+            <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+              <PHSelect options={semesterOptions} disabled = {semesterIsLoading} name="admissionSemester" label="Admission Semester" />
+            </Col>
+            <Col span={24} md={{ span: 12 }} lg={{ span: 8 }}>
+             
             </Col>
           </Row>
         </Col>
