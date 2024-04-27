@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Button, Layout, theme } from "antd";
+import { Button, Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useAppDispatch } from "../../redux/hooks";
@@ -33,9 +33,9 @@ const { Header, Content } = Layout;
 // ];
 
 const MainLayout = () => {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  // const {
+  //   token: { colorBgContainer, borderRadiusLG },
+  // } = theme.useToken();
   const useDispatch = useAppDispatch();
 
   const handleLogout = () => {
@@ -54,8 +54,8 @@ const MainLayout = () => {
             style={{
               padding: 24,
               minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              // background: colorBgContainer,
+              // borderRadius: borderRadiusLG,
             }}
           >
             <Outlet />
