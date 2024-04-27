@@ -8,7 +8,7 @@ import { academicSemesterSchema } from "../../../schemas/academicManagement.sche
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddAcademicSemesterMutation } from "../../../redux/features/admin/academicManagement.api";
 import { toast } from "sonner";
-import { TResponse } from "../../../types/global";
+import { TResponse } from "../../../types/global.type";
 
 const currentYear = new Date().getFullYear();
 const yearOptions = [0, 1, 2, 3, 4, 5].map((number) => ({

@@ -56,7 +56,7 @@ const AcademicSemester = () => {
     },
   ];
 
-  const tableData = semesterData?.data.map(
+  const tableData = semesterData?.data?.map(
     ({ _id, name, year, startMonth, endMonth }) => ({
       _id,
       name,
@@ -65,7 +65,6 @@ const AcademicSemester = () => {
       endMonth,
     })
   );
-
 
   const onChange: TableProps<DataType>["onChange"] = (
     pagination,
@@ -76,14 +75,7 @@ const AcademicSemester = () => {
     console.log("params", pagination, filters, sorter, extra);
   };
 
-  return (
-    <Table
-      columns={columns}
-      dataSource={tableData}
-      onChange={onChange}
-    //   showSorterTooltip={{ target: "sorter-icon" }}
-    />
-  );
+  return <Table columns={columns} dataSource={tableData} onChange={onChange} />;
 };
 
 export default AcademicSemester;
