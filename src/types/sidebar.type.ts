@@ -4,7 +4,7 @@ export type TAdminSidebarItem = {
     key: string;
     label: ReactNode;
     children?: TAdminSidebarItem[];
-};
+} | undefined;
 
 export type TRoutes = {
     path: string;
