@@ -8,16 +8,22 @@ type PHSelectType = {
     value: string;
     label: string;
     disabled?: boolean;
-  }[];
+  }[] | undefined;
+  disabled?: boolean;
 };
 
-const PHSelect = ({ label, name, options }: PHSelectType) => {
+const PHSelect = ({ label, name, options, disabled }: PHSelectType) => {
   return (
     <Controller
       name={name}
       render={({ field, fieldState: { error } }) => (
         <Form.Item label={label}>
-          <Select style={{ width: "100%" }} {...field} options={options} />
+          <Select
+            disabled={disabled}
+            style={{ width: "100%" }}
+            {...field}
+            options={options}
+          />
           {error && <small style={{ color: "red" }}>{error.message}</small>}
         </Form.Item>
       )}
