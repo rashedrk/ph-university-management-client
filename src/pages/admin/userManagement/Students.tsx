@@ -9,6 +9,7 @@ import {
 import { TQueryParams, TStudent } from "../../../types";
 import { useState } from "react";
 import { useGetAllStudentsQuery } from "../../../redux/features/admin/userManagement.api";
+import { Link } from "react-router-dom";
 
 const Students = () => {
   const [params, setParams] = useState<TQueryParams[]>([]);
@@ -35,9 +36,11 @@ const Students = () => {
     },
     {
       title: "Action",
-      render: () => (
+      render: (item) => (
         <Space>
+          <Link to={`/admin/student/${item.key}`}>
           <Button>Detail</Button>
+          </Link>
           <Button>Update</Button>
           <Button>Block</Button>
         </Space>
@@ -55,9 +58,9 @@ const Students = () => {
   }));
 
   const onChange: TableProps<TTableData>["onChange"] = (
-    pagination,
+    _pagination,
     filters,
-    sorter,
+    _sorter,
     extra
   ) => {
     if (extra.action === "filter") {
