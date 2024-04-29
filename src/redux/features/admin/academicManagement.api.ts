@@ -47,7 +47,7 @@ const academicManagementApi = baseApi.injectEndpoints({
                 url: '/academic-faculties',
                 method: 'GET',
             }),
-            transformResponse: (response: TResponseRedux<TAcademicFaculty>) => {
+            transformResponse: (response: TResponseRedux<TAcademicFaculty[]>) => {
                 return {
                     data: response.data,
                     meta: response.meta
@@ -67,8 +67,23 @@ const academicManagementApi = baseApi.injectEndpoints({
                 }
             }
         }),
+        getCourseFaculties: builder.query({
+            query: (courseId) => {
+                return {
+                    url: `/courses/${courseId}/get-faculties`,
+                    method: 'GET',
+                }
+            },
+            transformResponse: (response: TResponseRedux<TAcademicDepartment[]>) => {
+                // console.log(response);
+                return {
+                    data: response.data,
+                    meta: response.meta
+                }
+            }
+        }),
     })
 
 });
 
-export const { useGetAcademicSemesterQuery, useAddAcademicSemesterMutation, useAddAcademicFacultyMutation, useGetAcademicDepartmentQuery, useGetAllAcademicFacultyQuery } = academicManagementApi;
+export const { useGetAcademicSemesterQuery, useAddAcademicSemesterMutation, useAddAcademicFacultyMutation, useGetAcademicDepartmentQuery, useGetAllAcademicFacultyQuery, useGetCourseFacultiesQuery } = academicManagementApi;

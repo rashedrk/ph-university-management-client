@@ -6,26 +6,59 @@ import { toast } from "sonner";
 import {
   useAddCourseMutation,
   useGetAllCoursesQuery,
+  useGetAllRegisteredSemesterQuery,
 } from "../../../redux/features/admin/courseManagement.api";
 import PHInput from "../../../components/form/PhInput";
 import { TResponse } from "../../../types";
 import { TCourses } from "../../../types/courseManagement.type";
-import { useGetAcademicSemesterQuery, useGetAllAcademicFacultyQuery } from "../../../redux/features/admin/academicManagement.api";
+import {
+  useGetAcademicDepartmentQuery,
+  useGetAllAcademicFacultyQuery,
+  useGetCourseFacultiesQuery,
+} from "../../../redux/features/admin/academicManagement.api";
 import PHSelectWithWatch from "../../../components/form/PhSelectWithWatch";
+import { useState } from "react";
+import { weekdaysOptions } from "../../../constants/global";
 
 const OfferCourse = () => {
-  const { data: academicSemester } = useGetAcademicSemesterQuery(undefined);
+  const [courseId, setCourseId] = useState('');
+  const { data: registeredSemester } = useGetAllRegisteredSemesterQuery([
+    { name: "sort", value: "year" },
+    { name: "status", value: "UPCOMING" },
+  ]);
   const { data: academicFaculty } = useGetAllAcademicFacultyQuery(undefined);
+  const { data: academicDepartment } = useGetAcademicDepartmentQuery(undefined);
+  const { data: courses } = useGetAllCoursesQuery(undefined);
+  const { data: courseFaculties, isLoading } = useGetCourseFacultiesQuery(
+    courseId,
+    {
+      skip: !courseId 
+    }
+  );
 
-
-  const academicSemesterOptions = academicSemester?.data?.map((item) => ({
+  const registeredSemesterOptions = registeredSemester?.data?.map((item) => ({
     value: item._id,
-    label: `${item.name} ${item.year}`,
+    label: `${item.academicSemester.name} ${item.academicSemester.year}`,
   }));
+
   const academicFacultyOptions = academicFaculty?.data?.map((item) => ({
     value: item._id,
     label: item.name,
   }));
+  const academicDepartmentOptions = academicDepartment?.data?.map((item) => ({
+    value: item._id,
+    label: item.name,
+  }));
+  const coursesOptions = courses?.data?.map((item) => ({
+    value: item._id,
+    label: item.title,
+  }));
+  const courseFacultiesOptions = courseFaculties?.data?.faculties?.map(
+    (item) => ({
+      value: item._id,
+      label: item.fullName,
+    })
+  );
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const toastId = toast.loading("creating...");
@@ -60,18 +93,37 @@ const OfferCourse = () => {
     <Flex justify="center" align="center">
       <Col span={6}>
         <PHForm onSubmit={onSubmit}>
-          
           <PHSelect
-            label="Academic Semester"
-            name="academicSemester"
-            options={academicSemesterOptions}
+            label="Registered Semesters"
+            name="semesterRegistration"
+            options={registeredSemesterOptions}
           />
-          <PHSelectWithWatch
+          <PHSelect
             label="Academic Faculty"
             name="academicFaculty"
             options={academicFacultyOptions}
           />
-          <PHInput type="text" label="Title" name="title" />
+          <PHSelect
+            label="Academic Department"
+            name="academicDepartment"
+            options={academicDepartmentOptions}
+          />
+          <PHSelectWithWatch
+            onValueChange={setCourseId}
+            label="Course"
+            name="course"
+            options={coursesOptions}
+          />
+          <PHSelect
+            disabled={isLoading || !courseId}
+            label="Faculty"
+            name="faculty"
+            options={courseFacultiesOptions}
+          />
+          <PHSelect mode="multiple" label="Days" name="days" options={weekdaysOptions} />
+
+          <PHInput type="number" label="Section" name="section" />
+          <PHInput type="number" label="Max Capacity" name="maxCapacity" />
           <Button htmlType="submit">Submit</Button>
         </PHForm>
       </Col>
