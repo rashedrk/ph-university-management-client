@@ -1,7 +1,11 @@
-import { Button, Dropdown, Table, TableColumnsType, Tag } from "antd";
-import { useGetAllRegisteredSemesterQuery } from "../../../redux/features/admin/courseManagement.api";
+import { Button, Dropdown, MenuProps, Table, TableColumnsType, Tag } from "antd";
+import {
+  useGetAllRegisteredSemesterQuery,
+  useUpdateSemesterStatusMutation,
+} from "../../../redux/features/admin/courseManagement.api";
 import { TSemester } from "../../../types/courseManagement.type";
 import moment from "moment";
+import { useState } from "react";
 
 const items = [
   { key: "UPCOMING", label: "Upcoming" },
@@ -10,12 +14,20 @@ const items = [
 ];
 
 const RegisteredSemester = () => {
+  const [semesterId, setSemesterId] = useState("");
   const { data: semesterData, isFetching } =
     useGetAllRegisteredSemesterQuery(undefined);
 
-  const handleStatusDropdown = (data) => {
-    console.log(data);
-    
+  const [updateSemesterStatus] = useUpdateSemesterStatusMutation();
+
+  const handleStatusDropdown:  MenuProps['onClick'] = (data) => {
+    const semesterUpdateData = {
+      id: semesterId,
+      data: {
+        status: data.key,
+      },
+    };
+    updateSemesterStatus(semesterUpdateData);
   };
 
   const menuProps = {
@@ -57,9 +69,9 @@ const RegisteredSemester = () => {
     },
     {
       title: "Actions",
-      render: () => (
-        <Dropdown menu={menuProps}>
-          <Button>Update</Button>
+      render: (item) => (
+        <Dropdown menu={menuProps} trigger={["click"]}>
+          <Button onClick={() => setSemesterId(item.key)}>Update</Button>
         </Dropdown>
       ),
     },
