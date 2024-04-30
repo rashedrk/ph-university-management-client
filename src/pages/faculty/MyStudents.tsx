@@ -1,6 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useGetAllFacultyCoursesQuery } from "../../redux/features/faculty/facultyCourses.api";
-import { Table } from "antd";
+import {
+  useAddMarksMutation,
+  useGetAllFacultyCoursesQuery,
+} from "../../redux/features/faculty/facultyCourses.api";
+import { Button, Modal, Table } from "antd";
+import PHForm from "../../components/form/PhForm";
+import PHInput from "../../components/form/PhInput";
+import { useState } from "react";
 
 const MyStudents = () => {
   const { semesterRegisterId, courseId } = useParams();
@@ -35,12 +41,69 @@ const MyStudents = () => {
       title: "Action",
       key: "x",
       render: (item) => {
-        return <div>Update</div>;
+        return (
+          <div>
+            <AddMarksModal studentInfo={item} />
+          </div>
+        );
       },
     },
   ];
 
   return <Table columns={columns} dataSource={tableData} />;
+};
+
+const AddMarksModal = ({ studentInfo }) => {
+//   console.log(studentInfo);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addMark] = useAddMarksMutation();
+
+  const handleSubmit = async (data) => {
+    const studentMark = {
+      semesterRegistration: studentInfo.semesterRegistration,
+      offeredCourse: studentInfo.offeredCourse,
+      student: studentInfo.student,
+      courseMarks: {
+        classTest1: Number(data.classTest1),
+        midTerm: Number(data.midTerm),
+        classTest2: Number(data.classTest2),
+        finalTerm: Number(data.finalTerm),
+      },
+    };
+
+    // console.log(studentMark);
+    const res = await addMark(studentMark);
+
+    console.log(res);
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <Button onClick={showModal}>Update Marks</Button>
+      <Modal
+        title="Update Marks"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <PHForm onSubmit={handleSubmit}>
+          <PHInput type="text" name="classTest1" label="Class Test 1" />
+          <PHInput type="text" name="midTerm" label="Midterm" />
+          <PHInput type="text" name="classTest2" label="Class Test 2" />
+          <PHInput type="text" name="finalTerm" label="Final" />
+          <Button htmlType="submit">Submit</Button>
+        </PHForm>
+      </Modal>
+    </>
+  );
 };
 
 export default MyStudents;
