@@ -7,6 +7,7 @@ import {
   useAddCourseMutation,
   useGetAllCoursesQuery,
   useGetAllRegisteredSemesterQuery,
+  useOfferCourseMutation,
 } from "../../../redux/features/admin/courseManagement.api";
 import PHInput from "../../../components/form/PhInput";
 import { TResponse } from "../../../types";
@@ -19,12 +20,15 @@ import {
 import PHSelectWithWatch from "../../../components/form/PhSelectWithWatch";
 import { useState } from "react";
 import { weekdaysOptions } from "../../../constants/global";
+import PHTimePicker from "../../../components/form/PhTimePicker";
+import moment from "moment";
 
 const OfferCourse = () => {
-  const [courseId, setCourseId] = useState('');
+  const [courseId, setCourseId] = useState("");
   const { data: registeredSemester } = useGetAllRegisteredSemesterQuery([
     { name: "sort", value: "year" },
     { name: "status", value: "UPCOMING" },
+    { name: "status", value: "ONGOING" },
   ]);
   const { data: academicFaculty } = useGetAllAcademicFacultyQuery(undefined);
   const { data: academicDepartment } = useGetAcademicDepartmentQuery(undefined);
@@ -32,9 +36,11 @@ const OfferCourse = () => {
   const { data: courseFaculties, isLoading } = useGetCourseFacultiesQuery(
     courseId,
     {
-      skip: !courseId 
+      skip: !courseId,
     }
   );
+
+  const [createOfferCourse] = useOfferCourseMutation();
 
   const registeredSemesterOptions = registeredSemester?.data?.map((item) => ({
     value: item._id,
@@ -65,27 +71,26 @@ const OfferCourse = () => {
 
     const courseData = {
       ...data,
-      credits: Number(data.credits),
-      code: Number(data.code),
-      preRequisiteCourses: data.preRequisiteCourses.map((item) => ({
-        course: item,
-      })),
+      maxCapacity: Number(data.maxCapacity),
+      section: Number(data.section),
+      startTime: moment(new Date(data.startTime)).format('HH:mm'),
+      endTime: moment(new Date(data.endTime)).format('HH:mm'),
     };
 
-    console.log(courseData);
+    // console.log(courseData);
 
-    // try {
-    //   const res = (await addCourse(courseData)) as TResponse<TCourses>;
-    //   if (res.error) {
-    //     toast.error(res.error.data.message, { id: toastId });
-    //   } else {
-    //     toast.success("Semester added successfully", { id: toastId });
-    //   }
-    //   // console.log(res);
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error("something went wrong", { id: toastId });
-    // }
+    try {
+      const res = (await createOfferCourse(courseData)) as TResponse<TCourses>;
+      if (res.error) {
+        toast.error(res.error.data.message, { id: toastId });
+      } else {
+        toast.success("Course offered successfully", { id: toastId });
+      }
+      // console.log(res);
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong", { id: toastId });
+    }
 
     // console.log(semesterData);
   };
@@ -120,10 +125,17 @@ const OfferCourse = () => {
             name="faculty"
             options={courseFacultiesOptions}
           />
-          <PHSelect mode="multiple" label="Days" name="days" options={weekdaysOptions} />
+          <PHSelect
+            mode="multiple"
+            label="Days"
+            name="days"
+            options={weekdaysOptions}
+          />
 
           <PHInput type="number" label="Section" name="section" />
           <PHInput type="number" label="Max Capacity" name="maxCapacity" />
+          <PHTimePicker label="Start Time" name="startTime" />
+          <PHTimePicker label="End Time" name="endTime" />
           <Button htmlType="submit">Submit</Button>
         </PHForm>
       </Col>
